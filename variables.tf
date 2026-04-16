@@ -1,0 +1,75 @@
+variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "ap-southeast-1"
+}
+
+variable "vpc_cidr" {
+  description = "CIDR block for VPC"
+  type        = string
+  default     = "172.31.0.0/16"
+}
+
+variable "availability_zones" {
+  description = "Availability zones"
+  type        = list(string)
+  default     = ["ap-southeast-1a", "ap-southeast-1b", "ap-southeast-1c"]
+}
+
+variable "private_subnet_cidrs" {
+  description = "CIDR blocks for private subnets"
+  type        = list(string)
+  default     = ["172.31.0.0/20", "172.31.32.0/20", "172.31.16.0/20"]
+}
+
+#variable "public_subnet_cidrs" {
+#  description = "CIDR blocks for public subnets"
+#  type        = list(string)
+#  default     = ["172.31.4.0/24", "172.31.5.0/24", "172.31.6.0/24"]
+#}
+
+variable "cluster_name" {
+  description = "Name of the EKS cluster"
+  type        = string
+  default     = "my-eks-cluster"
+}
+
+variable "cluster_version" {
+  description = "Kubernetes version"
+  type        = string
+  default     = "1.30"
+}
+
+variable "node_groups" {
+  description = "EKS node group configuration"
+  type = map(object({
+    instance_types = list(string)
+    capacity_type  = string
+    scaling_config = object({
+      desired_size = number
+      max_size     = number
+      min_size     = number
+    })
+  }))
+  default = {
+    general = {
+      instance_types = ["t3.medium"]
+      capacity_type  = "ON_DEMAND"
+      scaling_config = {
+        desired_size = 2
+        max_size     = 4
+        min_size     = 1
+      }
+    }
+  }
+}
+
+variable "vpc_id" {
+  description = "Existing VPC ID"
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "List of existing subnet IDs"
+  type        = list(string)
+}
